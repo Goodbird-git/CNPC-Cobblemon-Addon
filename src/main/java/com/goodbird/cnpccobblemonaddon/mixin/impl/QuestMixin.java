@@ -1,6 +1,7 @@
 package com.goodbird.cnpccobblemonaddon.mixin.impl;
 
 import com.goodbird.cnpccobblemonaddon.constants.PokeQuestType;
+import com.goodbird.cnpccobblemonaddon.quest.QuestPokeCatch;
 import com.goodbird.cnpccobblemonaddon.quest.QuestPokeKill;
 import noppes.npcs.api.constants.QuestType;
 import noppes.npcs.controllers.data.Quest;
@@ -23,5 +24,7 @@ public class QuestMixin {
         type = questType;
         if(type == PokeQuestType.POKE_DEFEAT)
             questInterface = new QuestPokeKill();
+        if(type == PokeQuestType.POKE_CATCH)
+            questInterface = new QuestPokeCatch();
     }
 }

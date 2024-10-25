@@ -9,5 +9,6 @@ import net.minecraftforge.fml.common.Mod;
 public class CNPCCobblemonAddon {
     public CNPCCobblemonAddon(){
         CobblemonEvents.BATTLE_FAINTED.subscribe(Priority.NORMAL, ServerEventHandler::onPokemonFainted);
+        CobblemonEvents.POKEMON_CAPTURED.subscribe(Priority.NORMAL, ServerEventHandler::onPokemonCaught);
     }
 }

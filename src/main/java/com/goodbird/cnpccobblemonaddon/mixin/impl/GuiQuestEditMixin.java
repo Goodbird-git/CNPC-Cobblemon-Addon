@@ -1,5 +1,6 @@
 package com.goodbird.cnpccobblemonaddon.mixin.impl;
 
+import com.goodbird.cnpccobblemonaddon.client.gui.quest.GuiQuestTypePokeCatch;
 import com.goodbird.cnpccobblemonaddon.client.gui.quest.GuiQuestTypePokeKill;
 import com.goodbird.cnpccobblemonaddon.constants.PokeQuestType;
 import noppes.npcs.client.gui.global.GuiQuestEdit;
@@ -30,6 +31,9 @@ public class GuiQuestEditMixin extends GuiNPCInterface {
         if(guibutton.id != 7) return;
         if (quest.type == PokeQuestType.POKE_DEFEAT){
             setSubGui(new GuiQuestTypePokeKill(npc, quest, wrapper.parent));
+        }
+        if (quest.type == PokeQuestType.POKE_CATCH){
+            setSubGui(new GuiQuestTypePokeCatch(npc, quest, wrapper.parent));
         }
     }
 }

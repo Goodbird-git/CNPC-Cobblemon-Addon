@@ -17,17 +17,17 @@ import noppes.npcs.quests.QuestInterface;
 
 import java.util.*;
 
-public class QuestPokeKill extends QuestInterface {
+public class QuestPokeCatch extends QuestInterface {
     public TreeMap<String,Integer> targets = new TreeMap<>();
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
-        targets = new TreeMap(NBTTags.getStringIntegerMap(compound.getList("QuestKillTargets", 10)));
+        targets = new TreeMap(NBTTags.getStringIntegerMap(compound.getList("QuestCatchTargets", 10)));
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
-        compound.put("QuestKillTargets", NBTTags.nbtStringIntegerMap(targets));
+        compound.put("QuestCatchTargets", NBTTags.nbtStringIntegerMap(targets));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class QuestPokeKill extends QuestInterface {
         QuestData data = playerdata.activeQuests.get(questId);
         if(data == null)
             return false;
-        HashMap<String,Integer> killed = getKilled(data);
+        HashMap<String,Integer> killed = getCaught(data);
         if(killed.size() != targets.size())
             return false;
         for(String entity : killed.keySet()){
@@ -51,27 +51,27 @@ public class QuestPokeKill extends QuestInterface {
     public void handleComplete(Player player) {
     }
 
-    public HashMap<String, Integer> getKilled(QuestData data) {
-        return NBTTags.getStringIntegerMap(data.extraData.getList("Killed", 10));
+    public HashMap<String, Integer> getCaught(QuestData data) {
+        return NBTTags.getStringIntegerMap(data.extraData.getList("Caught", 10));
     }
-    public void setKilled(QuestData data, HashMap<String, Integer> killed) {
-        data.extraData.put("Killed", NBTTags.nbtStringIntegerMap(killed));
+    public void setCaught(QuestData data, HashMap<String, Integer> killed) {
+        data.extraData.put("Caught", NBTTags.nbtStringIntegerMap(killed));
     }
 
     @Override
     public IQuestObjective[] getObjectives(Player player) {
         List<IQuestObjective> list = new ArrayList<>();
         for(Map.Entry<String,Integer> entry : targets.entrySet()){
-            list.add(new QuestPokeKillObjective(player, entry.getKey(), entry.getValue()));
+            list.add(new QuestPokeCatchObjective(player, entry.getKey(), entry.getValue()));
         }
         return list.toArray(new IQuestObjective[list.size()]);
     }
 
-    class QuestPokeKillObjective implements IQuestObjective{
+    class QuestPokeCatchObjective implements IQuestObjective{
         private final Player player;
         private final String type;
         private final int amount;
-        public QuestPokeKillObjective(Player player, String type, int amount) {
+        public QuestPokeCatchObjective(Player player, String type, int amount) {
             this.player = player;
             this.type = type;
             this.amount = amount;
@@ -82,10 +82,10 @@ public class QuestPokeKill extends QuestInterface {
             PlayerData data = PlayerData.get(player);
             PlayerQuestData playerdata = data.questData;
             QuestData questdata = playerdata.activeQuests.get(questId);
-            HashMap<String,Integer> killed = getKilled(questdata);
-            if(!killed.containsKey(type))
+            HashMap<String,Integer> caught = getCaught(questdata);
+            if(!caught.containsKey(type))
                 return 0;
-            return killed.get(type);
+            return caught.get(type);
         }
 
         @Override
@@ -96,14 +96,14 @@ public class QuestPokeKill extends QuestInterface {
             PlayerData data = PlayerData.get(player);
             PlayerQuestData playerdata = data.questData;
             QuestData questdata = playerdata.activeQuests.get(questId);
-            HashMap<String,Integer> killed = getKilled(questdata);
+            HashMap<String,Integer> caught = getCaught(questdata);
 
-            if(killed.containsKey(type) && killed.get(type) == progress) {
+            if(caught.containsKey(type) && caught.get(type) == progress) {
                 return;
             }
-            killed.put(type, progress);
-            setKilled(questdata, killed);
-            data.questData.checkQuestCompletion(player, PokeQuestType.POKE_DEFEAT);
+            caught.put(type, progress);
+            setCaught(questdata, caught);
+            data.questData.checkQuestCompletion(player, PokeQuestType.POKE_CATCH);
             data.updateClient = true;
         }
 
