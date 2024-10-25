@@ -1,48 +1,37 @@
 package com.goodbird.cnpccobblemonaddon.handler;
 
-import com.cobblemon.mod.common.CobblemonEntities;
+import com.cobblemon.mod.common.api.battles.model.actor.ActorType;
+import com.cobblemon.mod.common.api.events.battles.BattleFaintedEvent;
+import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.goodbird.cnpccobblemonaddon.constants.PokeQuestType;
 import com.goodbird.cnpccobblemonaddon.quest.QuestPokeKill;
-import net.minecraft.world.entity.Entity;
+import kotlin.Unit;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import noppes.npcs.NoppesUtilServer;
 import noppes.npcs.controllers.data.PlayerData;
 import noppes.npcs.controllers.data.PlayerQuestData;
 import noppes.npcs.controllers.data.QuestData;
-import noppes.npcs.entity.EntityNPCInterface;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid="cnpccobblemonaddon")
 public class ServerEventHandler {
 
-    @SubscribeEvent
-    public static void invoke(LivingDeathEvent event) {
-        if(event.getEntity().level().isClientSide) return;
-        if(event.getEntity().getType()!= CobblemonEntities.POKEMON) return;
-        Entity source = NoppesUtilServer.GetDamageSourcee(event.getSource());
-        if(source != null){
-            Player player = null;
-            if(source instanceof Player)
-                player = (Player) source;
-            else if(source instanceof EntityNPCInterface && ((EntityNPCInterface)source).getOwner() instanceof Player)
-                player = (Player) ((EntityNPCInterface)source).getOwner();
-
-            if(player != null){
-                doQuest(player, (PokemonEntity) event.getEntity(), true);
+    public static Unit onPokemonFainted(BattleFaintedEvent event){
+        for(BattlePokemon opponent : event.getKilled().getFacedOpponents()){
+            if(event.getKilled().getEntity() == null || opponent.actor.getType() != ActorType.PLAYER) continue;
+            for(UUID playerId: opponent.actor.getPlayerUUIDs()){
+                Player player = PlayerExtensionsKt.getPlayer(playerId);
+                if(player==null) continue;
+                doQuest(player, event.getKilled().getEntity());
             }
         }
-        if(event.getEntity() instanceof Player){
-            PlayerData data = PlayerData.get((Player)event.getEntity());
-            data.save(false);
-        }
+        return Unit.INSTANCE;
     }
-
-    private static void doQuest(Player player, PokemonEntity entity, boolean all) {
+    private static void doQuest(Player player, PokemonEntity entity) {
         PlayerData pdata = PlayerData.get(player);
         PlayerQuestData playerdata = pdata.questData;
         String pokemonType = entity.getPokemon().getSpecies().resourceIdentifier.toString();
