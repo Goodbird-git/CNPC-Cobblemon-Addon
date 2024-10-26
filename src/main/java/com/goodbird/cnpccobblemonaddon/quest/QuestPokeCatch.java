@@ -2,13 +2,12 @@ package com.goodbird.cnpccobblemonaddon.quest;
 
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.goodbird.cnpccobblemonaddon.constants.PokeQuestType;
+import com.goodbird.cnpccobblemonaddon.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import noppes.npcs.NBTTags;
 import noppes.npcs.api.CustomNPCsException;
-import noppes.npcs.api.constants.QuestType;
 import noppes.npcs.api.handler.data.IQuestObjective;
 import noppes.npcs.controllers.data.PlayerData;
 import noppes.npcs.controllers.data.PlayerQuestData;
@@ -18,16 +17,16 @@ import noppes.npcs.quests.QuestInterface;
 import java.util.*;
 
 public class QuestPokeCatch extends QuestInterface {
-    public TreeMap<String,Integer> targets = new TreeMap<>();
+    public TreeMap<PokemonEntry,Integer> targets = new TreeMap<>();
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
-        targets = new TreeMap(NBTTags.getStringIntegerMap(compound.getList("QuestCatchTargets", 10)));
+        targets = new TreeMap(NBTUtils.getNBTIntegerMap(PokemonEntry.class, compound.getList("QuestCatchTargets", 10)));
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
-        compound.put("QuestCatchTargets", NBTTags.nbtStringIntegerMap(targets));
+        compound.put("QuestCatchTargets", NBTUtils.nbtNBTIntegerMap(targets));
     }
 
     @Override
@@ -36,10 +35,10 @@ public class QuestPokeCatch extends QuestInterface {
         QuestData data = playerdata.activeQuests.get(questId);
         if(data == null)
             return false;
-        HashMap<String,Integer> killed = getCaught(data);
+        HashMap<PokemonEntry,Integer> killed = getCaught(data);
         if(killed.size() != targets.size())
             return false;
-        for(String entity : killed.keySet()){
+        for(PokemonEntry entity : killed.keySet()){
             if(!targets.containsKey(entity) || targets.get(entity) > killed.get(entity))
                 return false;
         }
@@ -51,17 +50,17 @@ public class QuestPokeCatch extends QuestInterface {
     public void handleComplete(Player player) {
     }
 
-    public HashMap<String, Integer> getCaught(QuestData data) {
-        return NBTTags.getStringIntegerMap(data.extraData.getList("Caught", 10));
+    public HashMap<PokemonEntry, Integer> getCaught(QuestData data) {
+        return NBTUtils.getNBTIntegerMap(PokemonEntry.class, data.extraData.getList("Caught", 10));
     }
-    public void setCaught(QuestData data, HashMap<String, Integer> killed) {
-        data.extraData.put("Caught", NBTTags.nbtStringIntegerMap(killed));
+    public void setCaught(QuestData data, HashMap<PokemonEntry, Integer> killed) {
+        data.extraData.put("Caught", NBTUtils.nbtNBTIntegerMap(killed));
     }
 
     @Override
     public IQuestObjective[] getObjectives(Player player) {
         List<IQuestObjective> list = new ArrayList<>();
-        for(Map.Entry<String,Integer> entry : targets.entrySet()){
+        for(Map.Entry<PokemonEntry,Integer> entry : targets.entrySet()){
             list.add(new QuestPokeCatchObjective(player, entry.getKey(), entry.getValue()));
         }
         return list.toArray(new IQuestObjective[list.size()]);
@@ -69,11 +68,11 @@ public class QuestPokeCatch extends QuestInterface {
 
     class QuestPokeCatchObjective implements IQuestObjective{
         private final Player player;
-        private final String type;
+        private final PokemonEntry pokemonEntry;
         private final int amount;
-        public QuestPokeCatchObjective(Player player, String type, int amount) {
+        public QuestPokeCatchObjective(Player player, PokemonEntry pokemonEntry, int amount) {
             this.player = player;
-            this.type = type;
+            this.pokemonEntry = pokemonEntry;
             this.amount = amount;
         }
 
@@ -82,10 +81,10 @@ public class QuestPokeCatch extends QuestInterface {
             PlayerData data = PlayerData.get(player);
             PlayerQuestData playerdata = data.questData;
             QuestData questdata = playerdata.activeQuests.get(questId);
-            HashMap<String,Integer> caught = getCaught(questdata);
-            if(!caught.containsKey(type))
+            HashMap<PokemonEntry,Integer> caught = getCaught(questdata);
+            if(!caught.containsKey(pokemonEntry))
                 return 0;
-            return caught.get(type);
+            return caught.get(pokemonEntry);
         }
 
         @Override
@@ -96,12 +95,12 @@ public class QuestPokeCatch extends QuestInterface {
             PlayerData data = PlayerData.get(player);
             PlayerQuestData playerdata = data.questData;
             QuestData questdata = playerdata.activeQuests.get(questId);
-            HashMap<String,Integer> caught = getCaught(questdata);
+            HashMap<PokemonEntry,Integer> caught = getCaught(questdata);
 
-            if(caught.containsKey(type) && caught.get(type) == progress) {
+            if(caught.containsKey(pokemonEntry) && caught.get(pokemonEntry) == progress) {
                 return;
             }
-            caught.put(type, progress);
+            caught.put(pokemonEntry, progress);
             setCaught(questdata, caught);
             data.questData.checkQuestCompletion(player, PokeQuestType.POKE_CATCH);
             data.updateClient = true;
@@ -124,10 +123,10 @@ public class QuestPokeCatch extends QuestInterface {
 
         @Override
         public Component getMCText() {
-            if(PokemonSpecies.INSTANCE.getByIdentifier(new ResourceLocation(type))!=null) {
-                return PokemonSpecies.INSTANCE.getByIdentifier(new ResourceLocation(type)).getTranslatedName().append(": " + getProgress() + "/" + getMaxProgress());
+            if(PokemonSpecies.INSTANCE.getByIdentifier(new ResourceLocation(pokemonEntry.getType()))!=null) {
+                return (pokemonEntry.isShiny()? Component.literal("Shiny "):Component.empty()).append(PokemonSpecies.INSTANCE.getByIdentifier(new ResourceLocation(pokemonEntry.getType())).getTranslatedName()).append(": " + getProgress() + "/" + getMaxProgress());
             }
-            return Component.translatable(type).append(": " + getProgress() + "/" + getMaxProgress());
+            return (pokemonEntry.isShiny()? Component.literal("Shiny "):Component.empty()).append(Component.translatable(pokemonEntry.getType())).append(": " + getProgress() + "/" + getMaxProgress());
         }
     }
 

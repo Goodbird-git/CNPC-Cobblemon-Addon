@@ -8,6 +8,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.goodbird.cnpccobblemonaddon.constants.PokeQuestType;
+import com.goodbird.cnpccobblemonaddon.quest.PokemonEntry;
 import com.goodbird.cnpccobblemonaddon.quest.QuestPokeCatch;
 import com.goodbird.cnpccobblemonaddon.quest.QuestPokeKill;
 import kotlin.Unit;
@@ -38,22 +39,21 @@ public class ServerEventHandler {
         PlayerData pdata = PlayerData.get(player);
         PlayerQuestData playerdata = pdata.questData;
         String pokemonType = entity.getPokemon().getSpecies().resourceIdentifier.toString();
-
+        PokemonEntry entry = new PokemonEntry(pokemonType, entity.getPokemon().getShiny());
         for(QuestData data : playerdata.activeQuests.values()){
             if(data.quest.type != PokeQuestType.POKE_DEFEAT)
                 continue;
 
-            String name = pokemonType;
             QuestPokeKill quest = (QuestPokeKill) data.quest.questInterface;
-            if(!quest.targets.containsKey(name))
+            if(!quest.targets.containsKey(entry))
                 continue;
-            HashMap<String, Integer> killed = quest.getKilled(data);
-            if(killed.containsKey(name) && killed.get(name) >= quest.targets.get(name))
+            HashMap<PokemonEntry, Integer> killed = quest.getKilled(data);
+            if(killed.containsKey(entry) && killed.get(entry) >= quest.targets.get(entry))
                 continue;
             int amount = 0;
-            if(killed.containsKey(name))
-                amount = killed.get(name);
-            killed.put(name, amount + 1);
+            if(killed.containsKey(entry))
+                amount = killed.get(entry);
+            killed.put(entry, amount + 1);
             quest.setKilled(data, killed);
             pdata.updateClient = true;
         }
@@ -68,22 +68,22 @@ public class ServerEventHandler {
         PlayerData pdata = PlayerData.get(player);
         PlayerQuestData playerdata = pdata.questData;
         String pokemonType = entity.getSpecies().resourceIdentifier.toString();
+        PokemonEntry entry = new PokemonEntry(pokemonType, entity.getShiny());
 
         for(QuestData data : playerdata.activeQuests.values()){
             if(data.quest.type != PokeQuestType.POKE_CATCH)
                 continue;
 
-            String name = pokemonType;
             QuestPokeCatch quest = (QuestPokeCatch) data.quest.questInterface;
-            if(!quest.targets.containsKey(name))
+            if(!quest.targets.containsKey(entry))
                 continue;
-            HashMap<String, Integer> caught = quest.getCaught(data);
-            if(caught.containsKey(name) && caught.get(name) >= quest.targets.get(name))
+            HashMap<PokemonEntry, Integer> caught = quest.getCaught(data);
+            if(caught.containsKey(entry) && caught.get(entry) >= quest.targets.get(entry))
                 continue;
             int amount = 0;
-            if(caught.containsKey(name))
-                amount = caught.get(name);
-            caught.put(name, amount + 1);
+            if(caught.containsKey(entry))
+                amount = caught.get(entry);
+            caught.put(entry, amount + 1);
             quest.setCaught(data, caught);
             pdata.updateClient = true;
         }

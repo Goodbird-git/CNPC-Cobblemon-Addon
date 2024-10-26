@@ -2,15 +2,13 @@ package com.goodbird.cnpccobblemonaddon.client.gui.quest;
 
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.pokemon.Species;
+import com.goodbird.cnpccobblemonaddon.quest.PokemonEntry;
 import com.goodbird.cnpccobblemonaddon.quest.QuestPokeCatch;
 import net.minecraft.client.gui.screens.Screen;
 import noppes.npcs.client.gui.util.GuiNPCInterface;
 import noppes.npcs.controllers.data.Quest;
 import noppes.npcs.entity.EntityNPCInterface;
-import noppes.npcs.shared.client.gui.components.GuiButtonNop;
-import noppes.npcs.shared.client.gui.components.GuiCustomScrollNop;
-import noppes.npcs.shared.client.gui.components.GuiLabel;
-import noppes.npcs.shared.client.gui.components.GuiTextFieldNop;
+import noppes.npcs.shared.client.gui.components.*;
 import noppes.npcs.shared.client.gui.listeners.ICustomScrollListener;
 import noppes.npcs.shared.client.gui.listeners.ITextfieldListener;
 
@@ -44,19 +42,24 @@ public class GuiQuestTypePokeCatch extends GuiNPCInterface implements ITextfield
         super.init();
         int i = 0;
         addLabel(new GuiLabel(0, "Select the pokemon types to catch", guiLeft + 4, guiTop + 50));
-        for (String name : quest.targets.keySet()) {
-            this.addTextField(new GuiTextFieldNop(i, this,  guiLeft + 4, guiTop + 70 + i * 22, 180, 20, name));
-            this.addTextField(new GuiTextFieldNop(i + 3, this,  guiLeft + 186, guiTop + 70 + i * 22, 24, 20, quest.targets.get(name) + ""));
-            this.getTextField(i+3).numbersOnly = true;
-            this.getTextField(i+3).setMinMaxDefault(1, Integer.MAX_VALUE, 1);
+        addLabel(new GuiLabel(1, "and select if it's Shiny", guiLeft + 4, guiTop + 60));
+        for (PokemonEntry entry : quest.targets.keySet()) {
+            int idOffset = i*3;
+            this.addTextField(new GuiTextFieldNop(idOffset, this,  guiLeft + 4, guiTop + 70 + i * 22, 140, 20, entry.getType()));
+            this.addTextField(new GuiTextFieldNop(idOffset + 1, this,  guiLeft + 146, guiTop + 70 + i * 22, 24, 20, quest.targets.get(entry) + ""));
+            this.getTextField(idOffset+1).numbersOnly = true;
+            this.getTextField(idOffset+1).setMinMaxDefault(1, Integer.MAX_VALUE, 1);
+            this.addButton(new GuiButtonYesNo(this, idOffset+2, guiLeft + 171, guiTop + 70 + i * 22, 24, 20, entry.isShiny(), (btn)-> entry.setShiny(((GuiButtonYesNo)btn).getBoolean())));
             i++;
         }
 
         for(;i < 3; i++){
-            this.addTextField(new GuiTextFieldNop(i, this,  guiLeft + 4, guiTop + 70 + i * 22, 180, 20, ""));
-            this.addTextField(new GuiTextFieldNop(i + 3, this,  guiLeft + 186, guiTop + 70 + i * 22, 24, 20, "1"));
-            this.getTextField(i+3).numbersOnly = true;
-            this.getTextField(i+3).setMinMaxDefault(1, Integer.MAX_VALUE, 1);
+            int idOffset = i*3;
+            this.addTextField(new GuiTextFieldNop(idOffset, this,  guiLeft + 4, guiTop + 70 + i * 22, 140, 20, ""));
+            this.addTextField(new GuiTextFieldNop(idOffset + 1, this,  guiLeft + 146, guiTop + 70 + i * 22, 24, 20, "1"));
+            this.getTextField(idOffset + 1).numbersOnly = true;
+            this.getTextField(idOffset + 1).setMinMaxDefault(1, Integer.MAX_VALUE, 1);
+            this.addButton(new GuiButtonYesNo(this, idOffset+2, guiLeft + 171, guiTop + 70 + i * 22, 24, 20, false));
         }
         ArrayList<String> list = new ArrayList<String>();
 
@@ -85,7 +88,7 @@ public class GuiQuestTypePokeCatch extends GuiNPCInterface implements ITextfield
     @Override
     public boolean mouseClicked(double i, double j, int k) {
         boolean bo = super.mouseClicked(i, j, k);
-        if(GuiTextFieldNop.isAnyActive() && GuiTextFieldNop.getActive().id < 3){
+        if(GuiTextFieldNop.isAnyActive() && (GuiTextFieldNop.getActive().id)%3==0){
             scroll.visible = true;
             lastActive = GuiTextFieldNop.getActive();
         }
@@ -102,12 +105,12 @@ public class GuiQuestTypePokeCatch extends GuiNPCInterface implements ITextfield
     }
 
     private void saveTargets(){
-        TreeMap<String,Integer> map = new TreeMap<String,Integer>();
+        TreeMap<PokemonEntry,Integer> map = new TreeMap<>();
         for(int i = 0; i< 3; i++){
-            String name = getTextField(i).getValue();
+            String name = getTextField(i*3).getValue();
             if(name.isEmpty())
                 continue;
-            map.put(name, getTextField(i+3).getInteger());
+            map.put(new PokemonEntry(name, ((GuiButtonYesNo)getButton(i*3+2)).getBoolean()), getTextField(i*3+1).getInteger());
         }
         quest.targets = map;
     }

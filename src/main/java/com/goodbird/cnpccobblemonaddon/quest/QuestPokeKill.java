@@ -2,6 +2,7 @@ package com.goodbird.cnpccobblemonaddon.quest;
 
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.goodbird.cnpccobblemonaddon.constants.PokeQuestType;
+import com.goodbird.cnpccobblemonaddon.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -18,16 +19,16 @@ import noppes.npcs.quests.QuestInterface;
 import java.util.*;
 
 public class QuestPokeKill extends QuestInterface {
-    public TreeMap<String,Integer> targets = new TreeMap<>();
+    public TreeMap<PokemonEntry,Integer> targets = new TreeMap<>();
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
-        targets = new TreeMap(NBTTags.getStringIntegerMap(compound.getList("QuestKillTargets", 10)));
+        targets = new TreeMap(NBTUtils.getNBTIntegerMap(PokemonEntry.class, compound.getList("QuestKillTargets", 10)));
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
-        compound.put("QuestKillTargets", NBTTags.nbtStringIntegerMap(targets));
+        compound.put("QuestKillTargets", NBTUtils.nbtNBTIntegerMap(targets));
     }
 
     @Override
@@ -36,10 +37,10 @@ public class QuestPokeKill extends QuestInterface {
         QuestData data = playerdata.activeQuests.get(questId);
         if(data == null)
             return false;
-        HashMap<String,Integer> killed = getKilled(data);
+        HashMap<PokemonEntry,Integer> killed = getKilled(data);
         if(killed.size() != targets.size())
             return false;
-        for(String entity : killed.keySet()){
+        for(PokemonEntry entity : killed.keySet()){
             if(!targets.containsKey(entity) || targets.get(entity) > killed.get(entity))
                 return false;
         }
@@ -51,17 +52,17 @@ public class QuestPokeKill extends QuestInterface {
     public void handleComplete(Player player) {
     }
 
-    public HashMap<String, Integer> getKilled(QuestData data) {
-        return NBTTags.getStringIntegerMap(data.extraData.getList("Killed", 10));
+    public HashMap<PokemonEntry, Integer> getKilled(QuestData data) {
+        return NBTUtils.getNBTIntegerMap(PokemonEntry.class, data.extraData.getList("Killed", 10));
     }
-    public void setKilled(QuestData data, HashMap<String, Integer> killed) {
-        data.extraData.put("Killed", NBTTags.nbtStringIntegerMap(killed));
+    public void setKilled(QuestData data, HashMap<PokemonEntry, Integer> killed) {
+        data.extraData.put("Killed", NBTUtils.nbtNBTIntegerMap(killed));
     }
 
     @Override
     public IQuestObjective[] getObjectives(Player player) {
         List<IQuestObjective> list = new ArrayList<>();
-        for(Map.Entry<String,Integer> entry : targets.entrySet()){
+        for(Map.Entry<PokemonEntry,Integer> entry : targets.entrySet()){
             list.add(new QuestPokeKillObjective(player, entry.getKey(), entry.getValue()));
         }
         return list.toArray(new IQuestObjective[list.size()]);
@@ -69,11 +70,11 @@ public class QuestPokeKill extends QuestInterface {
 
     class QuestPokeKillObjective implements IQuestObjective{
         private final Player player;
-        private final String type;
+        private final PokemonEntry pokemonEntry;
         private final int amount;
-        public QuestPokeKillObjective(Player player, String type, int amount) {
+        public QuestPokeKillObjective(Player player, PokemonEntry pokemonEntry, int amount) {
             this.player = player;
-            this.type = type;
+            this.pokemonEntry = pokemonEntry;
             this.amount = amount;
         }
 
@@ -82,10 +83,10 @@ public class QuestPokeKill extends QuestInterface {
             PlayerData data = PlayerData.get(player);
             PlayerQuestData playerdata = data.questData;
             QuestData questdata = playerdata.activeQuests.get(questId);
-            HashMap<String,Integer> killed = getKilled(questdata);
-            if(!killed.containsKey(type))
+            HashMap<PokemonEntry,Integer> killed = getKilled(questdata);
+            if(!killed.containsKey(pokemonEntry))
                 return 0;
-            return killed.get(type);
+            return killed.get(pokemonEntry);
         }
 
         @Override
@@ -96,12 +97,12 @@ public class QuestPokeKill extends QuestInterface {
             PlayerData data = PlayerData.get(player);
             PlayerQuestData playerdata = data.questData;
             QuestData questdata = playerdata.activeQuests.get(questId);
-            HashMap<String,Integer> killed = getKilled(questdata);
+            HashMap<PokemonEntry,Integer> killed = getKilled(questdata);
 
-            if(killed.containsKey(type) && killed.get(type) == progress) {
+            if(killed.containsKey(pokemonEntry) && killed.get(pokemonEntry) == progress) {
                 return;
             }
-            killed.put(type, progress);
+            killed.put(pokemonEntry, progress);
             setKilled(questdata, killed);
             data.questData.checkQuestCompletion(player, PokeQuestType.POKE_DEFEAT);
             data.updateClient = true;
@@ -124,10 +125,10 @@ public class QuestPokeKill extends QuestInterface {
 
         @Override
         public Component getMCText() {
-            if(PokemonSpecies.INSTANCE.getByIdentifier(new ResourceLocation(type))!=null) {
-                return PokemonSpecies.INSTANCE.getByIdentifier(new ResourceLocation(type)).getTranslatedName().append(": " + getProgress() + "/" + getMaxProgress());
+            if(PokemonSpecies.INSTANCE.getByIdentifier(new ResourceLocation(pokemonEntry.getType()))!=null) {
+                return (pokemonEntry.isShiny()? Component.literal("Shiny "):Component.empty()).append(PokemonSpecies.INSTANCE.getByIdentifier(new ResourceLocation(pokemonEntry.getType())).getTranslatedName()).append(": " + getProgress() + "/" + getMaxProgress());
             }
-            return Component.translatable(type).append(": " + getProgress() + "/" + getMaxProgress());
+            return (pokemonEntry.isShiny()? Component.literal("Shiny "):Component.empty()).append(Component.translatable(pokemonEntry.getType())).append(": " + getProgress() + "/" + getMaxProgress());
         }
     }
 
