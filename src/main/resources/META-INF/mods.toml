@@ -13,7 +13,7 @@ loaderVersion="[47,)" #mandatory (24 is current forge version)
 # A URL to refer people to when problems occur with this mod
 issueTrackerURL="http://my.issue.tracker/" #optional
 
-license="CC BY-NC"
+license="MIT"
 
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
@@ -23,7 +23,7 @@ license="CC BY-NC"
     #updateJSONURL="" #optional
     #displayURL="" #optional
     #logoFile="" #optional
-    credits="Huge thanks to Voldir Argent for the idea of this addon and for the help with Cobblemon" #optional
+    credits="Huge thanks to Voldir for the idea of this addon and for the help with Cobblemon" #optional
     authors="Goodbird" #optional
     description='''
 A bridge between Cobblemon and CNPC-Unofficial. Adds new types of quests for NPCs, related to Cobblemon
