@@ -41,25 +41,28 @@ public class GuiQuestTypePokeCatch extends GuiNPCInterface implements ITextfield
     public void init() {
         super.init();
         int i = 0;
-        addLabel(new GuiLabel(0, "Select the pokemon types to catch", guiLeft + 4, guiTop + 50));
-        addLabel(new GuiLabel(1, "and select if it's Shiny", guiLeft + 4, guiTop + 60));
+
+        addLabel(new GuiLabel(0, "gui.setup.catch.title", guiLeft + 4, guiTop + 30));
+        addLabel(new GuiLabel(1, "gui.setup.pokemontype", guiLeft + 34, guiTop + 60));
+        addLabel(new GuiLabel(2, "gui.setup.count", guiLeft + 148, guiTop + 60));
+        addLabel(new GuiLabel(3, "gui.setup.isshiny", guiLeft + 178, guiTop + 60));
         for (PokemonEntry entry : quest.targets.keySet()) {
             int idOffset = i*3;
             this.addTextField(new GuiTextFieldNop(idOffset, this,  guiLeft + 4, guiTop + 70 + i * 22, 140, 20, entry.getType()));
-            this.addTextField(new GuiTextFieldNop(idOffset + 1, this,  guiLeft + 146, guiTop + 70 + i * 22, 24, 20, quest.targets.get(entry) + ""));
+            this.addTextField(new GuiTextFieldNop(idOffset + 1, this,  guiLeft + 150, guiTop + 70 + i * 22, 24, 20, quest.targets.get(entry) + ""));
             this.getTextField(idOffset+1).numbersOnly = true;
             this.getTextField(idOffset+1).setMinMaxDefault(1, Integer.MAX_VALUE, 1);
-            this.addButton(new GuiButtonYesNo(this, idOffset+2, guiLeft + 171, guiTop + 70 + i * 22, 24, 20, entry.isShiny(), (btn)-> entry.setShiny(((GuiButtonYesNo)btn).getBoolean())));
+            this.addButton(new GuiButtonYesNo(this, idOffset+2, guiLeft + 179, guiTop + 70 + i * 22, 24, 20, entry.isShiny(), (btn)-> entry.setShiny(((GuiButtonYesNo)btn).getBoolean())));
             i++;
         }
 
         for(;i < 3; i++){
             int idOffset = i*3;
             this.addTextField(new GuiTextFieldNop(idOffset, this,  guiLeft + 4, guiTop + 70 + i * 22, 140, 20, ""));
-            this.addTextField(new GuiTextFieldNop(idOffset + 1, this,  guiLeft + 146, guiTop + 70 + i * 22, 24, 20, "1"));
+            this.addTextField(new GuiTextFieldNop(idOffset + 1, this,  guiLeft + 150, guiTop + 70 + i * 22, 24, 20, "1"));
             this.getTextField(idOffset + 1).numbersOnly = true;
             this.getTextField(idOffset + 1).setMinMaxDefault(1, Integer.MAX_VALUE, 1);
-            this.addButton(new GuiButtonYesNo(this, idOffset+2, guiLeft + 171, guiTop + 70 + i * 22, 24, 20, false));
+            this.addButton(new GuiButtonYesNo(this, idOffset+2, guiLeft + 179, guiTop + 70 + i * 22, 24, 20, false));
         }
         ArrayList<String> list = new ArrayList<String>();
 

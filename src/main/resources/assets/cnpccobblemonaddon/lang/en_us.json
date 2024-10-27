@@ -1,4 +1,12 @@
 {
   "quest.pokekill": "Defeat",
-  "quest.pokecatch": "Catch"
+  "quest.pokecatch": "Catch",
+  "objective.pokekill": "Defeat",
+  "objective.pokecatch": "Catch",
+  "poketype.shiny": "Shiny",
+  "gui.setup.catch.title": "Select the pokemons to catch",
+  "gui.setup.kill.title": "Select the pokemons to defeat",
+  "gui.setup.pokemontype": "Pokemon type",
+  "gui.setup.count": "Count",
+  "gui.setup.isshiny": "Shiny"
 }

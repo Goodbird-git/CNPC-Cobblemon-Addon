@@ -23,7 +23,7 @@ license="CC BY-NC"
     #updateJSONURL="" #optional
     #displayURL="" #optional
     #logoFile="" #optional
-    #credits="" #optional
+    credits="Huge thanks to Voldir Argent for the idea of this addon and for the help with Cobblemon" #optional
     authors="Goodbird" #optional
     description='''
 A bridge between Cobblemon and CNPC-Unofficial. Adds new types of quests for NPCs, related to Cobblemon

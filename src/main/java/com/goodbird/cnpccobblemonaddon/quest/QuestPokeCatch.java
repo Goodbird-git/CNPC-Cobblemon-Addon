@@ -1,10 +1,12 @@
 package com.goodbird.cnpccobblemonaddon.quest;
 
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
+import com.cobblemon.mod.common.pokemon.Species;
 import com.goodbird.cnpccobblemonaddon.constants.PokeQuestType;
 import com.goodbird.cnpccobblemonaddon.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import noppes.npcs.api.CustomNPCsException;
@@ -123,11 +125,13 @@ public class QuestPokeCatch extends QuestInterface {
 
         @Override
         public Component getMCText() {
-            if(PokemonSpecies.INSTANCE.getByIdentifier(new ResourceLocation(pokemonEntry.getType()))!=null) {
-                return (pokemonEntry.isShiny()? Component.literal("Shiny "):Component.empty()).append(PokemonSpecies.INSTANCE.getByIdentifier(new ResourceLocation(pokemonEntry.getType())).getTranslatedName()).append(": " + getProgress() + "/" + getMaxProgress());
+            MutableComponent text = Component.translatable("objective.pokecatch").append(" ");
+            if(pokemonEntry.isShiny()){
+                text.append(Component.translatable("poketype.shiny").append(" "));
             }
-            return (pokemonEntry.isShiny()? Component.literal("Shiny "):Component.empty()).append(Component.translatable(pokemonEntry.getType())).append(": " + getProgress() + "/" + getMaxProgress());
-        }
+            Species species = PokemonSpecies.INSTANCE.getByIdentifier(new ResourceLocation(pokemonEntry.getType()));
+            text.append(species==null?Component.translatable(pokemonEntry.getType()):species.getTranslatedName());
+            return text.append(": " + getProgress() + "/" + getMaxProgress());}
     }
 
 }
