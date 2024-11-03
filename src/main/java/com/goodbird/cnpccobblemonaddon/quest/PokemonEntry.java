@@ -1,5 +1,6 @@
 package com.goodbird.cnpccobblemonaddon.quest;
 
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -12,13 +13,19 @@ public class PokemonEntry implements Comparable<PokemonEntry>, INBTSerializable<
 
     private boolean isShiny;
 
+    private int minLevel = 0;
     public PokemonEntry(){
 
     }
 
     public PokemonEntry(String type, boolean isShiny) {
+        this(type, isShiny, 0);
+    }
+
+    public PokemonEntry(String type, boolean isShiny, int minLevel) {
         this.type = type;
         this.isShiny = isShiny;
+        this.minLevel = minLevel;
     }
 
     public PokemonEntry(String type) {
@@ -41,11 +48,20 @@ public class PokemonEntry implements Comparable<PokemonEntry>, INBTSerializable<
         isShiny = shiny;
     }
 
+    public int getMinLevel() {
+        return minLevel;
+    }
+
+    public void setMinLevel(int minLevel) {
+        this.minLevel = minLevel;
+    }
+
     @Override
     public String toString() {
         return "PokemonEntry{" +
                 "type='" + type + '\'' +
                 ", isShiny=" + isShiny +
+                ", minLevel=" + minLevel +
                 '}';
     }
 
@@ -53,6 +69,7 @@ public class PokemonEntry implements Comparable<PokemonEntry>, INBTSerializable<
     public int compareTo(@NotNull PokemonEntry o) {
         if(type.compareTo(o.type)!=0) return type.compareTo(o.type);
         if (Boolean.compare(isShiny, o.isShiny)!=0) return Boolean.compare(isShiny, o.isShiny);
+        if (Integer.compare(minLevel, o.minLevel)!=0) return Integer.compare(minLevel, o.minLevel);
         return 0;
     }
 
@@ -61,6 +78,7 @@ public class PokemonEntry implements Comparable<PokemonEntry>, INBTSerializable<
         CompoundTag tag = new CompoundTag();
         tag.putString("type", type);
         tag.putBoolean("isShiny", isShiny);
+        tag.putInt("minLevel", minLevel);
         return tag;
     }
 
@@ -68,17 +86,25 @@ public class PokemonEntry implements Comparable<PokemonEntry>, INBTSerializable<
     public void deserializeNBT(CompoundTag nbt) {
         this.type = nbt.getString("type");
         this.isShiny = nbt.getBoolean("isShiny");
+        this.minLevel = nbt.getInt("minLevel");
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof PokemonEntry that)) return false;
-        return isShiny == that.isShiny && Objects.equals(type, that.type);
+        return isShiny == that.isShiny && Objects.equals(type, that.type) && minLevel == that.minLevel;
+    }
+
+    public boolean matches(Pokemon pokemon){
+        if(!pokemon.getSpecies().resourceIdentifier.toString().equals(type)) return false;
+        if(pokemon.getShiny()!=isShiny) return false;
+        if(pokemon.getLevel()<minLevel) return false;
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, isShiny);
+        return Objects.hash(type, isShiny, minLevel);
     }
 }

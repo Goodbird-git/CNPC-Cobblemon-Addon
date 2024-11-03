@@ -3,6 +3,7 @@ package com.goodbird.cnpccobblemonaddon.mixin.impl;
 import com.goodbird.cnpccobblemonaddon.constants.PokeQuestType;
 import com.goodbird.cnpccobblemonaddon.quest.QuestPokeCatch;
 import com.goodbird.cnpccobblemonaddon.quest.QuestPokeKill;
+import com.goodbird.cnpccobblemonaddon.quest.QuestPokeTeam;
 import noppes.npcs.api.constants.QuestType;
 import noppes.npcs.controllers.data.Quest;
 import noppes.npcs.quests.QuestInterface;
@@ -26,5 +27,7 @@ public class QuestMixin {
             questInterface = new QuestPokeKill();
         if(type == PokeQuestType.POKE_CATCH)
             questInterface = new QuestPokeCatch();
+        if(type == PokeQuestType.POKE_TEAM)
+            questInterface = new QuestPokeTeam();
     }
 }

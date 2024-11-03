@@ -28,7 +28,7 @@ public class QuestPokeCatch extends QuestInterface {
 
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
-        compound.put("QuestCatchTargets", NBTUtils.nbtNBTIntegerMap(targets));
+        compound.put("QuestCatchTargets", NBTUtils.tagIntegerMapToNBT(targets));
     }
 
     @Override
@@ -56,7 +56,7 @@ public class QuestPokeCatch extends QuestInterface {
         return NBTUtils.getNBTIntegerMap(PokemonEntry.class, data.extraData.getList("Caught", 10));
     }
     public void setCaught(QuestData data, HashMap<PokemonEntry, Integer> killed) {
-        data.extraData.put("Caught", NBTUtils.nbtNBTIntegerMap(killed));
+        data.extraData.put("Caught", NBTUtils.tagIntegerMapToNBT(killed));
     }
 
     @Override

@@ -9,9 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import noppes.npcs.NBTTags;
 import noppes.npcs.api.CustomNPCsException;
-import noppes.npcs.api.constants.QuestType;
 import noppes.npcs.api.handler.data.IQuestObjective;
 import noppes.npcs.controllers.data.PlayerData;
 import noppes.npcs.controllers.data.PlayerQuestData;
@@ -30,7 +28,7 @@ public class QuestPokeKill extends QuestInterface {
 
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
-        compound.put("QuestKillTargets", NBTUtils.nbtNBTIntegerMap(targets));
+        compound.put("QuestKillTargets", NBTUtils.tagIntegerMapToNBT(targets));
     }
 
     @Override
@@ -58,7 +56,7 @@ public class QuestPokeKill extends QuestInterface {
         return NBTUtils.getNBTIntegerMap(PokemonEntry.class, data.extraData.getList("Killed", 10));
     }
     public void setKilled(QuestData data, HashMap<PokemonEntry, Integer> killed) {
-        data.extraData.put("Killed", NBTUtils.nbtNBTIntegerMap(killed));
+        data.extraData.put("Killed", NBTUtils.tagIntegerMapToNBT(killed));
     }
 
     @Override

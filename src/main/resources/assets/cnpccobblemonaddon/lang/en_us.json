@@ -1,12 +1,17 @@
 {
   "quest.pokekill": "Defeat",
   "quest.pokecatch": "Catch",
+  "quest.poketeam": "Team",
   "objective.pokekill": "Defeat",
   "objective.pokecatch": "Catch",
+  "objective.poketeam": "Have",
   "poketype.shiny": "Shiny",
   "gui.setup.catch.title": "Select the pokemons to catch",
   "gui.setup.kill.title": "Select the pokemons to defeat",
+  "gui.setup.team.title": "Select the pokemons to have in team",
   "gui.setup.pokemontype": "Pokemon type",
   "gui.setup.count": "Count",
-  "gui.setup.isshiny": "Shiny"
+  "gui.setup.isshiny": "Shiny",
+  "gui.setup.minLevel": "Min.Lvl",
+  "poketype.minlevel": "(lvl>%d)"
 }

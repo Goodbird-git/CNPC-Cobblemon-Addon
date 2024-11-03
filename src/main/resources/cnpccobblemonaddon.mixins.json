@@ -7,7 +7,8 @@
     "QuestMixin"
   ],
   "client": [
-    "GuiQuestEditMixin"
+    "GuiQuestEditMixin",
+    "GuiQuestLogMixin"
   ],
   "minVersion": "0.8"
 }
