@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class GuiQuestEditMixin extends GuiNPCInterface {
     @Shadow(remap = false) private Quest quest;
 
-    @Redirect(method = "init", at=@At(value="NEW", target = "(Lnoppes/npcs/shared/client/gui/listeners/IGuiInterface;IIIII[Ljava/lang/String;I)Lnoppes/npcs/shared/client/gui/components/GuiButtonBiDirectional;"))
+    @Redirect(method = "init", at=@At(value="NEW", target = "(Lnoppes/npcs/shared/client/gui/listeners/IGuiInterface;IIIII[Ljava/lang/String;I)Lnoppes/npcs/shared/client/gui/components/GuiButtonBiDirectional;"), remap = false)
     public GuiButtonBiDirectional init(IGuiInterface gui, int id, int x, int y, int width, int height, String[] arr, int current){
         if(id==6) return new GuiButtonBiDirectional(gui,id,x,y,width,height,new String[]{"quest.item", "quest.dialog", "quest.kill", "quest.location", "quest.areakill", "quest.manual", "quest.pokekill", "quest.pokecatch", "quest.poketeam"},current);
         return new GuiButtonBiDirectional(gui,id,x,y,width,height,arr,current);
