@@ -7,6 +7,8 @@ import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
+import com.goodbird.cnpccobblemonaddon.EventHooks;
+import com.goodbird.cnpccobblemonaddon.api.event.PokemonCatchEvent;
 import com.goodbird.cnpccobblemonaddon.constants.PokeQuestType;
 import com.goodbird.cnpccobblemonaddon.quest.PokemonEntry;
 import com.goodbird.cnpccobblemonaddon.quest.QuestPokeCatch;
@@ -14,8 +16,10 @@ import com.goodbird.cnpccobblemonaddon.quest.QuestPokeKill;
 import kotlin.Unit;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fml.common.Mod;
+import noppes.npcs.api.wrapper.WrapperNpcAPI;
 import noppes.npcs.controllers.data.PlayerData;
 import noppes.npcs.controllers.data.PlayerQuestData;
+import noppes.npcs.controllers.data.PlayerScriptData;
 import noppes.npcs.controllers.data.QuestData;
 
 import java.util.HashMap;
@@ -61,6 +65,7 @@ public class ServerEventHandler {
     }
 
     public static Unit onPokemonCaught(PokemonCapturedEvent event){
+        EventHooks.onPlayerCaughtPokemon(PlayerData.get(event.getPlayer()).scriptData, event);
         doCatchQuest(event.getPlayer(), event.getPokemon());
         return Unit.INSTANCE;
     }
