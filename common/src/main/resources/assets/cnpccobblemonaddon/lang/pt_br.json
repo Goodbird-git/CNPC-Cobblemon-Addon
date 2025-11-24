@@ -1,0 +1,17 @@
+{
+  "quest.pokekill": "Derrotar",
+  "quest.pokecatch": "Capturar",
+  "quest.poketeam": "Equipe",
+  "objective.pokekill": "Derrote",
+  "objective.pokecatch": "Capture",
+  "objective.poketeam": "Tenha",
+  "poketype.shiny": "Brilhante",
+  "gui.setup.catch.title": "Selecione os Pokémon para capturar",
+  "gui.setup.kill.title": "Selecione os Pokémon para derrotar",
+  "gui.setup.team.title": "Selecione os Pokémon para ter na equipe",
+  "gui.setup.pokemontype": "Tipo de Pokémon",
+  "gui.setup.count": "Quantidade",
+  "gui.setup.isshiny": "Brilhante",
+  "gui.setup.minLevel": "Nível Mín.",
+  "poketype.minlevel": "(nível>%d)"
+}

@@ -1,8 +1,0 @@
-{
-  "_comment": "Texture by Kiba",
-  "parent": "minecraft:block/cube_column",
-  "textures": {
-    "end": "cnpccobblemonaddon:block/spawner_tb",
-    "side": "cnpccobblemonaddon:block/spawner_side_transparent"
-  }
-}
