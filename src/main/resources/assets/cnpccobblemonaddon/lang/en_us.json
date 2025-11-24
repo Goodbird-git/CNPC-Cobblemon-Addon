@@ -13,5 +13,7 @@
   "gui.setup.count": "Count",
   "gui.setup.isshiny": "Shiny",
   "gui.setup.minLevel": "Min.Lvl",
-  "poketype.minlevel": "(lvl>%d)"
+  "poketype.minlevel": "(lvl>%d)",
+  "block.cnpccobblemonaddon.pokespawner": "Poke Spawner",
+  "item.cnpccobblemonaddon.spawnerwand": "Spawner Wand"
 }
