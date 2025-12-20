@@ -45,10 +45,18 @@ subprojects {
     dependencies {
         minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
         mappings loom.officialMojangMappings()
-        modImplementation "curse.maven:cobblemon-687131:7247586"
-        modImplementation "curse.maven:ktl-308769:7143515"
-//        modImplementation "curse.maven:cnpcs-1052708:7195543"
+        //modCompileOnly "curse.maven:cobblemon-687131:7247586"
+        //modCompileOnly files('../lib/CustomNPCs-1.21.1.20251124.jar')
+        //Fabric
+        modCompileOnly "curse.maven:cobblemon-687131:7247586"
+        modImplementation "curse.maven:ktl-308769:7340876"
         modImplementation files('../lib/CustomNPCs-1.21.1.20251124.jar')
+        implementation files('../lib/Cobblemon-fabric-1.7.2+1.21.1---dev-shadow.jar')
+        //Neo
+//        modImplementation "curse.maven:cobblemon-687131:7273151"
+//        modImplementation files('../lib/CustomNPCs-Unofficial-NeoForge-1.21.1.20251207.jar')
+//        modImplementation "curse.maven:cnpcs-1052708:7195543"
+
         compileOnly 'org.jetbrains.kotlin:kotlin-stdlib:2.2.20'
     }
 

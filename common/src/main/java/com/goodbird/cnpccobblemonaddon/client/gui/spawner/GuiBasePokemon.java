@@ -19,7 +19,7 @@ import java.util.Iterator;
 
 public class GuiBasePokemon extends GuiBasic {
     public GuiBasePokemon(){
-        background = new ResourceLocation("cnpccobblemonaddon", "textures/gui/pokebg.jpg");
+        background = new ResourceLocation("cnpccobblemonaddon", "textures/gui/pokebg.png");
         imageWidth = 414;
         imageHeight = 256;
     }

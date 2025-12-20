@@ -12,7 +12,7 @@ import net.minecraft.world.inventory.Slot;
 import noppes.npcs.shared.client.gui.components.GuiBasicContainer;
 
 public class GuiContainerBasePokemon<T extends AbstractContainerMenu> extends GuiBasicContainer<T> {
-    ResourceLocation background = new ResourceLocation("cnpccobblemonaddon", "textures/gui/pokebg.jpg");
+    ResourceLocation background = new ResourceLocation("cnpccobblemonaddon", "textures/gui/pokebg.png");
     public GuiContainerBasePokemon(T cont, Inventory inv, Component titleIn) {
         super(cont, inv, titleIn);
         imageWidth = 414;

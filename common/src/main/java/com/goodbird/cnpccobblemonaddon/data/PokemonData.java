@@ -304,13 +304,13 @@ public class PokemonData {
 
         public CompoundTag serializeNBT(HolderLookup.Provider provider){
             CompoundTag tag = new CompoundTag();
-            tag.put("stack", heldStackEntry.save(provider));
+            tag.put("stack", heldStackEntry.isEmpty()? new CompoundTag() : heldStackEntry.save(provider));
             tag.putDouble("chance", chance);
             return tag;
         }
 
         public HeldItemEntry parseNBT(HolderLookup.Provider provider, CompoundTag tag){
-            heldStackEntry = ItemStack.parse(provider, tag.getCompound("stack")).get();
+            heldStackEntry = ItemStack.parse(provider, tag.getCompound("stack")).orElse(ItemStack.EMPTY);
             chance = tag.getDouble("chance");
             return this;
         }

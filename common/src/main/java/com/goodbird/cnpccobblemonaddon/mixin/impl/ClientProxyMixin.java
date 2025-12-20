@@ -40,7 +40,7 @@ public class ClientProxyMixin {
         }
     }
 
-    @Inject(method = "load", at=@At("TAIL"), remap = false)
+    @Inject(method = "postload", at=@At("TAIL"), remap = false)
     public void load(CallbackInfo ci) {
         MenuScreens.register(ModContainerRegistry.EDIT_ENTRY_MENU.get(), GuiSpawnerEntry::new);
         MenuScreens.register(ModContainerRegistry.EDIT_ENTRY_LOOT_MENU.get(), GuiSpawnerEntryLoot::new);

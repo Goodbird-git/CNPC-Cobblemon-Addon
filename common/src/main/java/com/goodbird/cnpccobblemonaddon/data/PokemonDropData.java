@@ -171,7 +171,7 @@ public class PokemonDropData {
 
         public CompoundTag serializeNBT(HolderLookup.Provider provider){
             CompoundTag tag = new CompoundTag();
-            tag.put("stack", dropStackEntry.save(provider));
+            tag.put("stack", dropStackEntry.isEmpty()? new CompoundTag() : dropStackEntry.save(provider));
             tag.putFloat("chance", chance);
             tag.putInt("minQuantity", minQuantity);
             tag.putInt("maxQuantity", maxQuantity);
@@ -179,7 +179,7 @@ public class PokemonDropData {
         }
 
         public PokemonDropData.DropItemEntry parseNBT(HolderLookup.Provider provider, CompoundTag tag){
-            dropStackEntry = ItemStack.parse(provider, tag.getCompound("stack")).get();
+            dropStackEntry = ItemStack.parse(provider, tag.getCompound("stack")).orElse(ItemStack.EMPTY);
             chance = tag.getFloat("chance");
             minQuantity = tag.getInt("minQuantity");
             maxQuantity = tag.getInt("maxQuantity");

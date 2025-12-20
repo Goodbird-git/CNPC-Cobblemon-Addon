@@ -1,8 +1,12 @@
 package com.goodbird.cnpccobblemonaddon.handler;
 
+import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.ActorType;
+import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.events.battles.BattleFaintedEvent;
 import com.cobblemon.mod.common.api.events.pokemon.PokemonCapturedEvent;
+import com.cobblemon.mod.common.battles.BattleRegistry;
+import com.cobblemon.mod.common.battles.actor.TrainerBattleActor;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
@@ -13,6 +17,7 @@ import com.goodbird.cnpccobblemonaddon.quest.PokemonEntry;
 import com.goodbird.cnpccobblemonaddon.quest.QuestPokeCatch;
 import com.goodbird.cnpccobblemonaddon.quest.QuestPokeKill;
 import kotlin.Unit;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import noppes.npcs.controllers.data.PlayerData;
 import noppes.npcs.controllers.data.PlayerQuestData;
@@ -23,11 +28,23 @@ import java.util.UUID;
 
 public class ServerEventHandler {
 
+    public static String getBattleActor(Player player){
+        PokemonBattle battle = BattleRegistry.getBattleByParticipatingPlayer((ServerPlayer) player);
+        for(BattleActor actor : battle.getActors()){
+            if(actor instanceof TrainerBattleActor){
+                return "Trainer";
+            }
+        }
+        return "Non trainer (Probably wild)";
+    }
+
     public static Unit onPokemonFainted(BattleFaintedEvent event){
         for(BattlePokemon opponent : event.getKilled().getFacedOpponents()){
             if(event.getKilled().getEntity() == null || opponent.actor.getType() != ActorType.PLAYER) continue;
             for(UUID playerId: opponent.actor.getPlayerUUIDs()){
                 Player player = PlayerExtensionsKt.getPlayer(playerId);
+
+
                 if(player==null) continue;
                 doDefeatQuest(player, event.getKilled().getEntity());
             }

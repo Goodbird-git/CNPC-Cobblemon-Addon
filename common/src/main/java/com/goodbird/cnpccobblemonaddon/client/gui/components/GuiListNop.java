@@ -27,6 +27,15 @@ public class GuiListNop extends ContainerObjectSelectionList<GuiListNop.Entry> {
     }
 
     @Override
+    protected void renderListBackground(GuiGraphics guiGraphics) {
+
+    }
+
+    @Override
+    protected void renderListSeparators(GuiGraphics guiGraphics) {
+    }
+
+    @Override
     public void clearEntries() {
         super.clearEntries();
     }
