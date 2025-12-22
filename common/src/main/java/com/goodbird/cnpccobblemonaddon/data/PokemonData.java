@@ -310,7 +310,7 @@ public class PokemonData {
         }
 
         public HeldItemEntry parseNBT(HolderLookup.Provider provider, CompoundTag tag){
-            heldStackEntry = ItemStack.parse(provider, tag.getCompound("stack")).orElse(ItemStack.EMPTY);
+            heldStackEntry = tag.getCompound("stack").isEmpty()?ItemStack.EMPTY : ItemStack.parse(provider, tag.getCompound("stack")).orElse(ItemStack.EMPTY);
             chance = tag.getDouble("chance");
             return this;
         }

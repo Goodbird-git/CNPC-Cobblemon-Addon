@@ -20,7 +20,8 @@
     "ClientProxyMixin",
     "GuiQuestEditMixin",
     "GuiQuestLogMixin",
-    "ScreenMixin"
+    "ScreenMixin",
+    "MixinCNPCClient"
   ],
   "minVersion": "0.8"
 }

@@ -39,10 +39,4 @@ public class ClientProxyMixin {
             cir.setReturnValue(gui);
         }
     }
-
-    @Inject(method = "postload", at=@At("TAIL"), remap = false)
-    public void load(CallbackInfo ci) {
-        MenuScreens.register(ModContainerRegistry.EDIT_ENTRY_MENU.get(), GuiSpawnerEntry::new);
-        MenuScreens.register(ModContainerRegistry.EDIT_ENTRY_LOOT_MENU.get(), GuiSpawnerEntryLoot::new);
-    }
 }

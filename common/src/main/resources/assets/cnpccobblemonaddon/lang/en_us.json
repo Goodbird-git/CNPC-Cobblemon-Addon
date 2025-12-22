@@ -15,5 +15,7 @@
   "gui.setup.minLevel": "Min.Lvl",
   "poketype.minlevel": "(lvl>%d)",
   "block.cnpccobblemonaddon.pokespawner": "Poke Spawner",
-  "item.cnpccobblemonaddon.spawnerwand": "Spawner Wand"
+  "item.cnpccobblemonaddon.spawnerwand": "Spawner Wand",
+  "painting.cnpccobblemonaddon.goodbird.title": "Goodbird",
+  "painting.cnpccobblemonaddon.goodbird.author": "Voldir Argent, Kompotik"
 }

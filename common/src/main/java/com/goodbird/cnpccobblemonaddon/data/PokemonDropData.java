@@ -179,7 +179,7 @@ public class PokemonDropData {
         }
 
         public PokemonDropData.DropItemEntry parseNBT(HolderLookup.Provider provider, CompoundTag tag){
-            dropStackEntry = ItemStack.parse(provider, tag.getCompound("stack")).orElse(ItemStack.EMPTY);
+            dropStackEntry = tag.getCompound("stack").isEmpty()?ItemStack.EMPTY : ItemStack.parse(provider, tag.getCompound("stack")).orElse(ItemStack.EMPTY);
             chance = tag.getFloat("chance");
             minQuantity = tag.getInt("minQuantity");
             maxQuantity = tag.getInt("maxQuantity");
